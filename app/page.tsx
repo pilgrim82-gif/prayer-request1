@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffecdt, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import useSWR, { mutate } from 'swr'
 import { Header } from '@/components/header'
 import { AnswerBanner } from '@/components/answer-banner'
