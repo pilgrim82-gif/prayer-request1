@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react' // 오타 수정 완료
 import useSWR, { mutate } from 'swr'
 import { Header } from '@/components/header'
 import { AnswerBanner } from '@/components/answer-banner'
@@ -22,13 +22,16 @@ interface PrayerAnswer {
 
 export default function HomePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
-useEffect(() => {
-  const ua = navigator.userAgent.toLowerCase();
-  if (ua.includes("kakaotalk")) {
-    window.location.href = `kakaotalk://web/openExternalApp/?url=${encodeURIComponent(window.location.href)}`;
-  }
-}, []);
-  
+
+  // 1. 카카오톡 외부 브라우저 호출 로직 (컴포넌트 최상단 위치)
+  useEffect(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes("kakaotalk")) {
+      window.location.href = `kakaotalk://web/openExternalApp/?url=${encodeURIComponent(window.location.href)}`;
+    }
+  }, []);
+
+  // 2. 데이터 페칭 로직
   const { data: prayerRequests, mutate: mutatePrayers, isLoading: isPrayersLoading } = useSWR<PrayerRequest[]>(
     '/api/prayer-requests',
     fetcher,
@@ -41,6 +44,7 @@ useEffect(() => {
     { refreshInterval: 10000 }
   )
 
+  // 3. 핸들러 함수들
   const handleSubmit = useCallback(async (imageUrl: string, text: string, authorId: string) => {
     setIsSubmitting(true)
     try {
@@ -67,7 +71,6 @@ useEffect(() => {
     }
   }, [mutatePrayers])
 
-  // Optimistic update for prayer count
   const handlePrayerCountUpdate = useCallback((id: string, newCount: number) => {
     mutatePrayers(
       (current) =>
@@ -78,7 +81,6 @@ useEffect(() => {
     )
   }, [mutatePrayers])
 
-  // Handle prayer answered
   const handlePrayerAnswered = useCallback((id: string) => {
     mutatePrayers(
       (current) =>
@@ -98,14 +100,12 @@ useEffect(() => {
       <Header totalPrayers={totalPrayers} totalPrayerCount={totalPrayerCount} />
       
       <main className="container mx-auto px-4 py-6 max-w-4xl">
-        {/* Prayer Answer Banner */}
         {prayerAnswers && prayerAnswers.length > 0 && (
           <section className="mb-8">
             <AnswerBanner answers={prayerAnswers} />
           </section>
         )}
 
-        {/* Upload Form */}
         <section className="mb-10">
           <UploadForm onSubmit={handleSubmit} />
           {isSubmitting && (
@@ -115,7 +115,6 @@ useEffect(() => {
           )}
         </section>
 
-        {/* Prayer List */}
         <section>
           <h2 className="text-xl font-semibold text-foreground mb-6 flex items-center gap-2">
             <span className="w-1.5 h-6 bg-primary rounded-full" />
@@ -130,8 +129,6 @@ useEffect(() => {
         </section>
       </main>
 
-      
-      {/* Footer */}
       <footer className="py-8 text-center text-sm text-muted-foreground border-t border-border mt-12">
         <p>교회 연합 행사를 위한 기도 제목 공유</p>
         <p className="mt-1">함께 기도하며 하나님의 응답을 기대합니다</p>
