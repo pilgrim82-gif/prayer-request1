@@ -130,6 +130,7 @@ useEffect(() => {
         </section>
       </main>
 
+      
       {/* Footer */}
       <footer className="py-8 text-center text-sm text-muted-foreground border-t border-border mt-12">
         <p>교회 연합 행사를 위한 기도 제목 공유</p>
